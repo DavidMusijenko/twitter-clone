@@ -17,7 +17,7 @@ const style = {
 };
 
 const Home: NextPage = () => {
-  const { appStatus, connectToWallet } = useContext(TwitterContext);
+  const { appStatus, connectWallet } = useContext(TwitterContext);
 
   const app = (status = appStatus): any => {
     switch (status) {
@@ -47,7 +47,7 @@ const Home: NextPage = () => {
       <Image alt="MetaMask" src={metamaskLogo} height={200} width={200} />
       <div
         className={style.walletConnectButton}
-        onClick={() => connectToWallet()}
+        onClick={() => connectWallet()}
       >
         Connect Wallet
       </div>
