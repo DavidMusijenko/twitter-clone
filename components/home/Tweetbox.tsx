@@ -1,9 +1,11 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { BsCardImage, BsEmojiSmile } from "react-icons/bs";
 import { RiFileGifLine, RiBarChartHorizontalFill } from "react-icons/ri";
 import { IoMdCalendar } from "react-icons/io";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { client } from "../../lib/client";
+import { TwitterContext } from "../../context/TwitterContext";
 
 const style = {
   wrapper: `px-4 flex flex-row border-b border-[#38444d] pb-4`,
@@ -19,12 +21,44 @@ const style = {
   activeSubmit: `bg-[#1d9bf0] text-white`,
 };
 
-const TweetBox = () => {
+function TweetBox() {
   const [tweetMessage, setTweetMessage] = useState("");
+  const { currentAccount } = useContext(TwitterContext);
 
-  const postTweet = (event) => {
+  const submitTweet = async (event: any) => {
     event.preventDefault();
-    console.log(tweetMessage);
+
+    if (!tweetMessage) return;
+
+    const tweetId = `${currentAccount}_${Date.now()}`;
+
+    const tweetDoc = {
+      _type: "tweets",
+      _id: tweetId,
+      tweet: tweetMessage,
+      timestamp: new Date(Date.now()).toISOString(),
+      author: {
+        _key: tweetId,
+        _type: "reference",
+        _ref: currentAccount,
+      },
+    };
+
+    await client.createIfNotExists(tweetDoc);
+
+    await client
+      .patch(currentAccount)
+      .setIfMissing({ tweets: [] })
+      .insert("after", "tweets[-1]", [
+        {
+          _key: tweetId,
+          _type: "reference",
+          _ref: tweetId,
+        },
+      ])
+      .commit();
+
+    setTweetMessage("");
   };
 
   return (
@@ -55,6 +89,8 @@ const TweetBox = () => {
             </div>
             <button
               type="submit"
+              onClick={(event) => submitTweet(event)}
+              disabled={!tweetMessage}
               className={`${style.submitGeneral} ${
                 tweetMessage ? style.activeSubmit : style.inactiveSubmit
               }`}
@@ -66,6 +102,6 @@ const TweetBox = () => {
       </div>
     </div>
   );
-};
+}
 
 export default TweetBox;
