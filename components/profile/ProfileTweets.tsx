@@ -1,4 +1,6 @@
 import Post from "../Post";
+import { useContext } from "react";
+import { TwitterContext } from "../../context/TwitterContext";
 
 const style = {
   wrapper: `no-scrollbar`,
@@ -6,46 +8,28 @@ const style = {
   headerTitle: `text-xl font-bold`,
 };
 
-const tweets = [
-  {
-    displayName: "David",
-    username: "0xD23oirjoiadjfoijfoidjalkdfj",
-    avatar:
-      "https://media-exp1.licdn.com/dms/image/C4E03AQGAVAhnTpfElg/profile-displayphoto-shrink_100_100/0/1659127771446?e=1672876800&v=beta&t=EPYnVf_GfaMELUwveP5mRMmb-zwJ97gRufJ5pknuge4",
-    text: "wassup yo",
-    timestamp: "2022-11-01T12:00:00.000Z",
-  },
-  {
-    displayName: "David",
-    username: "0xD23oirjoiadjfoijfoidjalkdfj",
-    avatar:
-      "https://media-exp1.licdn.com/dms/image/C4E03AQGAVAhnTpfElg/profile-displayphoto-shrink_100_100/0/1659127771446?e=1672876800&v=beta&t=EPYnVf_GfaMELUwveP5mRMmb-zwJ97gRufJ5pknuge4",
-    text: "wassup yo",
-    timestamp: "2022-11-01T12:00:00.000Z",
-  },
-  {
-    displayName: "David",
-    username: "0xD23oirjoiadjfoijfoidjalkdfj",
-    avatar:
-      "https://media-exp1.licdn.com/dms/image/C4E03AQGAVAhnTpfElg/profile-displayphoto-shrink_100_100/0/1659127771446?e=1672876800&v=beta&t=EPYnVf_GfaMELUwveP5mRMmb-zwJ97gRufJ5pknuge4",
-    text: "wassup yo",
-    timestamp: "2022-11-01T12:00:00.000Z",
-  },
-];
-
 const ProfileTweets = () => {
+  const { currentAccount, currentUser, tweets } = useContext(TwitterContext);
+
   return (
     <div className={style.wrapper}>
       {tweets.map((tweet, index) => (
         <Post
           key={index}
-          displayName={tweet.displayName}
-          username={`${tweet.username.slice(0, 4)}...${tweet.username.slice(
+          displayName={
+            currentUser.name === "Unnamed"
+              ? `${currentUser.walletAddress.slice(
+                  0,
+                  4
+                )}...${currentUser.walletAddress.slice(41)}`
+              : currentUser.name
+          }
+          username={`${currentAccount.slice(0, 4)}...${currentAccount.slice(
             -4
           )}`}
-          avatar={tweet.avatar}
-          text={tweet.text}
-          isProfileImageNft={tweet.isProfileImageNft}
+          avatar={tweet.author.profileImage}
+          text={tweet.tweet}
+          isProfileImageNft={tweet.author.isProfileImageNft}
           timestamp={tweet.timestamp}
         />
       ))}

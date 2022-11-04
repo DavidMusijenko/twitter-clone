@@ -1,6 +1,6 @@
 import { VscTwitter } from "react-icons/vsc";
 import SidebarOption from "./SidebarOptions";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { RiHome7Line, RiHome7Fill, RiFileList2Fill } from "react-icons/ri";
 import { BiHash } from "react-icons/bi";
 import { FiBell, FiMoreHorizontal } from "react-icons/fi";
@@ -13,7 +13,8 @@ import {
   BsPerson,
   BsPersonFill,
 } from "react-icons/bs";
-import Link from "next/link";
+import { useRouter } from "next/router";
+import { TwitterContext } from "../context/TwitterContext";
 
 const style = {
   wrapper: `flex-[0.7] px-8 flex flex-col`,
@@ -32,6 +33,9 @@ const style = {
 
 const Sidebar = ({ initialSelectedIcon = "Home" }) => {
   const [selected, setSelected] = useState("Home");
+  const { currentAccount, currentUser } = useContext(TwitterContext);
+  const router = useRouter();
+
   return (
     <div className={style.wrapper}>
       <div className={style.twitterIconContainer}>
@@ -94,14 +98,33 @@ const Sidebar = ({ initialSelectedIcon = "Home" }) => {
           setSelected={setSelected}
           redirect={"/"}
         />
-        <div className={style.tweetButton}>Mint</div>
+        <div
+          className={style.tweetButton}
+          onClick={() =>
+            router.push(`${router.pathname}/?mint=${currentAccount}`)
+          }
+        >
+          Mint
+        </div>
       </div>
       <div className={style.profileButton}>
-        <div className={style.profileLeft}></div>
+        <div className={style.profileLeft}>
+          <img
+            src={currentUser.profileImage}
+            alt="profile"
+            className={
+              currentUser.isProfileImageNft
+                ? `${style.profileImage} smallHex`
+                : style.profileImage
+            }
+          />
+        </div>
         <div className={style.profileRight}>
           <div className={style.details}>
-            <div className={style.name}>Ponny</div>
-            <div className={style.handle}>@ponny</div>
+            <div className={style.name}>{currentUser.name}</div>
+            <div className={style.handle}>
+              {currentAccount.slice(0, 6)}...{currentAccount.slice(39)}
+            </div>
           </div>
           <div className={style.moreContainer}>
             <FiMoreHorizontal />

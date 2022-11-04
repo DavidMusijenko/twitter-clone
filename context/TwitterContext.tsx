@@ -15,6 +15,14 @@ export const TwitterProvider = ({ children }): any => {
     checkIfWalletIsConnected();
   }, []);
 
+  //fetch from DB
+
+  useEffect(() => {
+    if (!currentAccount || appStatus !== "connected") return;
+    getCurrentUserDetails(currentAccount);
+    fetchTweets();
+  }, [currentAccount, appStatus]);
+
   const checkIfWalletIsConnected = async () => {
     if (!window.ethereum) return setAppStatus("noMetaMask");
     try {
@@ -68,7 +76,7 @@ export const TwitterProvider = ({ children }): any => {
         name: "Unnamed",
         isProfileImageNft: false,
         profileImage:
-          "https://about.twitter.com/content/dam/about-twitter/en/brand-toolkit/brand-download-img-1.jpg.twimg.1920.jpg",
+          "https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png",
         walletAddress: userWalletAddress,
       };
 
@@ -82,12 +90,12 @@ export const TwitterProvider = ({ children }): any => {
 
   const fetchTweets = async () => {
     const query = `
-      *[_type == "tweets"]{
-        "author": author->{name, walletAddress, profileImage, isProfileImageNft},
-        tweet,
-        timestamp
-      }|order(timestamp desc)
-    `;
+    *[_type == "tweets"]{
+      "author": author->{name, walletAddress, profileImage, isProfileImageNft},
+      tweet,
+      timestamp
+    }|order(timestamp desc)
+  `;
 
     const sanityResponse = await client.fetch(query);
 
@@ -100,7 +108,7 @@ export const TwitterProvider = ({ children }): any => {
         author: {
           name: item.author.name,
           walletAddress: item.author.walletAddress,
-          profileImage: item.profileImageUrl,
+          profileImage: item.author.profileImage,
           isProfileImageNft: item.author.isProfileImageNft,
         },
       };
@@ -113,15 +121,15 @@ export const TwitterProvider = ({ children }): any => {
     if (appStatus !== "connected") return;
 
     const query = `
-      *[_type == "users" && _id == "${userAccount}"]{
-        "tweets": tweets[]->{timestamp, tweet}|order(timestamp desc),
-        name,
-        profileImage,
-        isProfileImageNft,
-        coverImage,
-        walletAddress
-      }
-    `;
+    *[_type == "users" && _id == "${userAccount}"]{
+      "tweets": tweets[]->{timestamp, tweet}|order(timestamp desc),
+      name,
+      profileImage,
+      isProfileImageNft,
+      coverImage,
+      walletAddress
+    }
+  `;
 
     const sanityResponse = await client.fetch(query);
 

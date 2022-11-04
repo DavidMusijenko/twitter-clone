@@ -2,6 +2,8 @@ import { defaultConfig } from "next/dist/server/config-shared";
 import { BsStars } from "react-icons/bs";
 import TweetBox from "./Tweetbox";
 import Post from "../Post";
+import { useContext } from "react";
+import { TwitterContext } from "../../context/TwitterContext";
 
 const style = {
   wrapper: `flex-[2] border-r border-l border-[#38444d] overflow-y-scroll`,
@@ -9,38 +11,9 @@ const style = {
   headerTitle: `text-xl font-bold`,
 };
 
-const tweets = [
-  {
-    displayName: "David",
-    username: "0xD23oirjoiadjfoijfoidjalkdfj",
-    isProfileImageNft: true,
-    avatar:
-      "https://media-exp1.licdn.com/dms/image/C4E03AQGAVAhnTpfElg/profile-displayphoto-shrink_100_100/0/1659127771446?e=1672876800&v=beta&t=EPYnVf_GfaMELUwveP5mRMmb-zwJ97gRufJ5pknuge4",
-    text: "wassup yo",
-    timestamp: "2022-11-01T12:00:00.000Z",
-  },
-  {
-    displayName: "David",
-    username: "0xD23oirjoiadjfoijfoidjalkdfj",
-
-    avatar:
-      "https://media-exp1.licdn.com/dms/image/C4E03AQGAVAhnTpfElg/profile-displayphoto-shrink_100_100/0/1659127771446?e=1672876800&v=beta&t=EPYnVf_GfaMELUwveP5mRMmb-zwJ97gRufJ5pknuge4",
-    text: "wassup yo",
-    timestamp: "2022-11-01T12:00:00.000Z",
-    isProfileImageNft: true,
-  },
-  {
-    displayName: "David",
-    username: "0xD23oirjoiadjfoijfoidjalkdfj",
-    avatar:
-      "https://media-exp1.licdn.com/dms/image/C4E03AQGAVAhnTpfElg/profile-displayphoto-shrink_100_100/0/1659127771446?e=1672876800&v=beta&t=EPYnVf_GfaMELUwveP5mRMmb-zwJ97gRufJ5pknuge4",
-    text: "wassup yo",
-    timestamp: "2022-11-01T12:00:00.000Z",
-    isProfileImageNft: true,
-  },
-];
-
 const Feed = () => {
+  const { tweets } = useContext(TwitterContext);
+
   return (
     <div className={style.wrapper}>
       <div className={style.header}>
@@ -51,12 +24,20 @@ const Feed = () => {
       {tweets.map((tweet, index) => (
         <Post
           key={index}
-          displayName={tweet.displayName}
-          username={`${tweet.username.slice(0, 4)}...${tweet.username.slice(
-            -4
-          )}`}
-          avatar={tweet.avatar}
-          text={tweet.text}
+          displayName={
+            tweet.author.name === "Unnamed"
+              ? `${tweet.author.walletAddress.slice(
+                  0,
+                  4
+                )}...${tweet.author.walletAddress.slice(41)}`
+              : tweet.author.name
+          }
+          userName={`${tweet.author.walletAddress.slice(
+            0,
+            4
+          )}...${tweet.author.walletAddress.slice(41)}`}
+          avatar={tweet.author.profileImage}
+          text={tweet.tweet}
           isProfileImageNft={tweet.isProfileImageNft}
           timestamp={tweet.timestamp}
         />

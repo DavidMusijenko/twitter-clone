@@ -1,5 +1,7 @@
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useRouter } from "next/router";
+import { TwitterContext } from "../../context/TwitterContext";
+import { useContext } from "react";
 
 const style = {
   wrapper: `border-[#38444d] border-b`,
@@ -20,8 +22,7 @@ const style = {
 
 const ProfileHeader = () => {
   const router = useRouter();
-  const isProfileImageNft = false;
-  const currentAccount = "0x1234567890";
+  const { currentAccount, currentUser } = useContext(TwitterContext);
 
   return (
     <div className={style.wrapper}>
@@ -30,20 +31,25 @@ const ProfileHeader = () => {
           <BsArrowLeftShort />
         </div>
         <div className={style.details}>
-          <div className={style.primary}>@username</div>
-          <div className={style.secondary}>69 tweets</div>
+          <div className={style.primary}>{currentUser.name}</div>
+          <div className={style.secondary}>
+            {currentUser.tweets?.length}{" "}
+            {currentUser.tweets?.length === 1 ? "Tweet" : "Tweets"}
+          </div>
         </div>
       </div>
       <div className={style.coverPhotoContainer}>
         <img
-          src="https://i.ytimg.com/vi/hw2oDVPobks/maxresdefault.jpg"
+          src={currentUser.coverImage}
           alt="cover"
           className={style.coverPhoto}
         />
       </div>
       <div className={style.profileImageContainer}>
         <div
-          className={isProfileImageNft ? "hex" : style.profileImageContainer}
+          className={
+            currentUser.isProfileImageNft ? "hex" : style.profileImageContainer
+          }
         >
           <img
             src="https://media-exp1.licdn.com/dms/image/C4E03AQGAVAhnTpfElg/profile-displayphoto-shrink_100_100/0/1659127771446?e=1672876800&v=beta&t=EPYnVf_GfaMELUwveP5mRMmb-zwJ97gRufJ5pknuge4"
@@ -54,7 +60,7 @@ const ProfileHeader = () => {
       </div>
       <div className={style.details}>
         <div>
-          <div className={style.primary}>David Musijenko</div>
+          <div className={style.primary}>{currentAccount.name}</div>
           <div className={style.secondary}>
             {currentAccount && (
               <>
