@@ -15,7 +15,7 @@ export const TwitterProvider = ({ children }): any => {
     checkIfWalletIsConnected();
   }, []);
 
-  //fetch from DB
+  //fetch from DB //
 
   useEffect(() => {
     if (!currentAccount || appStatus !== "connected") return;
