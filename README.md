@@ -2,6 +2,8 @@
 
 Uncensored Twitter clone with MetaMask authentication
 
+![alt Twitter-clone](https://github.com/DavidMusijenko/twitter-clone/blob/main/public/shitposter.png)
+
 ## Deploy locally
 
 1. clone repo
@@ -13,3 +15,7 @@ Uncensored Twitter clone with MetaMask authentication
 
 1. Connect with MetaMask
 2. Share politically incorrect opinions
+
+## TODO
+
+1. Make it a public board with pay per post published mechanic
